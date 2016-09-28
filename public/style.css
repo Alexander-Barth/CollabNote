@@ -1,0 +1,17 @@
+body {
+    font-family: sans;
+}
+
+#doc, #rendered {
+    height: 500px;
+    width: 45%;
+    float: left;
+    margin: 5px;
+    border: 1px solid gray;
+    padding: 10px;
+    overflow-y: scroll;
+}
+
+.note {
+  clear: both;
+}
