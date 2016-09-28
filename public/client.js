@@ -26,7 +26,7 @@ var applied_changes = [];
 var local_changes = {};
 
 
-function isEqual(arr1,arr2) {
+function isEqual(arr1, arr2) {
     return JSON.stringify(arr1) === JSON.stringify(arr2);
 }
 
@@ -36,7 +36,7 @@ function copy(obj) {
 
 // difference of setA and setB
 // all elements in setA, but not in setB
-function diffset(setA,setB) {
+function diffset(setA, setB) {
     return setA.filter(function(_) { return setB.indexOf(_) === -1; });
 }
 
@@ -85,7 +85,7 @@ function rebase(change1,change2) {
               else {
                   // oh, no, change1 remove a pice of text where change2 added text
                   // add the text at the removed location
-                  console.log('trouble');
+                  console.log("trouble");
                   change2.add.start =  change1.del.start;
               }
        }
@@ -118,7 +118,7 @@ function rebase(change1,change2) {
 
 // apply a list of changes
 function merge(oldtext,allchanges,applied_changes) {
-    var i = 0, j, k;
+    var i, j, k;
     var newtext = oldtext;
     var changes = copy(allchanges);
 
@@ -126,7 +126,7 @@ function merge(oldtext,allchanges,applied_changes) {
         k = null;
 
         // look for the earliest change applied to version "applied_changes"
-        for (i = 0; i < changes.length; i++) {
+        for (i = 0; i < changes.length; i+=1) {
             if (isEqual(changes[i].base,applied_changes)) {
                 if (k === null) {
                     k = i;
@@ -142,7 +142,7 @@ function merge(oldtext,allchanges,applied_changes) {
             oldtext = newtext;
 
             // rebase all other patches with the same base
-            for (j = 0; j < changes.length; j++) {
+            for (j = 0; j < changes.length; j+=1) {
                 if (isEqual(changes[k].base,changes[j].base) && k !== j) {
                     // rebase changes[j]
                     rebase(changes[k],changes[j]);
@@ -154,7 +154,7 @@ function merge(oldtext,allchanges,applied_changes) {
             changes.splice(k,1);
         }
         else {
-            console.log('cannot apply all changes');
+            console.log("cannot apply all changes");
             break;
         }
     }
@@ -165,7 +165,7 @@ function merge(oldtext,allchanges,applied_changes) {
 
 function render() {
     // render buffer as markdown
-    document.getElementById('rendered').innerHTML =
+    document.getElementById("rendered").innerHTML =
         marked(doc.value);
 
     MathJax.Hub.Queue(["Typeset",MathJax.Hub,"MathExample"]);
@@ -177,7 +177,7 @@ function set_document(text) {
 }
 
 function compare(oldtext,text) {
-    var i,j;
+    var i, j;
     var founddiff = false;
     var cmd = {time: Date.now()};
 
@@ -187,9 +187,9 @@ function compare(oldtext,text) {
 
     // i start index
     // j end index (counted from the end)
-    for (var i=0; i < Math.max(oldtext.length,text.length); i++) {
+    for (i = 0; i < Math.max(oldtext.length,text.length); i+=1) {
         if (oldtext[i] !== text[i]) {
-            for (var j=0; j < Math.max(oldtext.length,text.length); j++) {
+            for (j = 0; j < Math.max(oldtext.length,text.length); j+=1) {
 
                 // we always need i <= (old)text.length-j
 
@@ -198,13 +198,13 @@ function compare(oldtext,text) {
 
                     if (i !== oldtext.length-j) {
                         cmd.del = {start: i, n: oldtext.length-j-i};
-                        //console.log('delete',i,oldtext.substring(i,oldtext.length-j));
+                        //console.log("delete",i,oldtext.substring(i,oldtext.length-j));
                     }
                     // added
 
                     if (i !== text.length-j) {
                         cmd.add = {start: i, data: text.substring(i,text.length-j)};
-                        //console.log('added',i,text.substring(i,text.length-j));
+                        //console.log("added",i,text.substring(i,text.length-j));
                     }
 
                     return cmd;
@@ -228,7 +228,7 @@ function update(ev) {
         oldtext = doc.value;
 
         // every change gets an unique id
-        cmd.id = userid + ':' + tag;
+        cmd.id = userid + ":" + tag;
         cmd.base = copy(applied_changes);
         tag = tag+1;
 
@@ -240,7 +240,7 @@ function update(ev) {
         local_changes[cmd.id] = cmd;
 
         // send to server
-        socket.send(JSON.stringify({'command': 'edit', 'diff': [cmd]}));
+        socket.send(JSON.stringify({"command": "edit", "diff": [cmd]}));
     }
 }
 
@@ -249,50 +249,58 @@ function update(ev) {
 function parse_query_string() {
     // http://stackoverflow.com/a/3855394
     return (function(a) {
-        if (a == "") return {};
+        var i, p;
         var b = {};
-        for (var i = 0; i < a.length; ++i)
+
+        if (a === "") {
+            return {};
+        }
+
+        for (i = 0; i < a.length; i+=1)
         {
-            var p=a[i].split('=', 2);
-            if (p.length == 1)
+            p = a[i].split("=", 2);
+            if (p.length === 1) {
                 b[p[0]] = "";
-            else
+            }
+            else {
                 b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
+            }
         }
         return b;
-    })(window.location.search.substr(1).split('&'));
+    })(window.location.search.substr(1).split("&"));
 
 }
 
 function encode_query_string(param) {
+    var name;
     var parameters = "";
 
-    for (var name in param) {
+    for (name in param) {
         parameters += (parameters.length !==0 ? "&" : "") + encodeURIComponent(name) + "=" + encodeURIComponent(param[name]);
     }
 
     return parameters;
-};
+}
 
 function init() {
     var qs = parse_query_string();
-    console.log('qs',qs);
+    console.log("qs",qs);
 
-    if (qs['userid'] === undefined) {
+    if (qs["userid"] === undefined) {
         userid = Math.round(Math.random() * 1e3);
     }
     else {
-        userid = qs['userid'];
+        userid = qs["userid"];
     }
 
-    if (qs['docid'] === undefined) {
+    if (qs["docid"] === undefined) {
         // random id, must be unique for a document
-        qs['docid'] = Math.round(Math.random() * 1e8);
-        var newURL = window.location.protocol + "//" + window.location.host + window.location.pathname + '?' + encode_query_string(qs);
+        qs["docid"] = Math.round(Math.random() * 1e8);
+        var newURL = window.location.protocol + "//" + window.location.host + window.location.pathname + "?" + encode_query_string(qs);
         window.location.href = newURL;
     }
 
-    docid = qs['docid'];
+    docid = qs["docid"];
 
     // start with empty document
     doc = document.getElementById("doc");
@@ -303,7 +311,7 @@ function init() {
 
     // initialize mathjax
     MathJax.Hub.Config({
-        tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+        tex2jax: {inlineMath: [["$","$"], ["\\(","\\)"]]}
     });
 
     // open socked
@@ -311,17 +319,17 @@ function init() {
 
     socket.onopen = function() {
         console.log("Connected!");
-        socket.send(JSON.stringify({'docid': docid, 'userid': userid, 'command': 'subscribe'}));
+        socket.send(JSON.stringify({"docid": docid, "userid": userid, "command": "subscribe"}));
     }
 
     socket.onmessage = function(e) {
         if (typeof e.data !== "string") {
-            console.error('Binary message received');
+            console.error("Binary message received");
         }
 
         var cmds = JSON.parse(e.data);
 
-        if (cmds['command'] == 'edit') {
+        if (cmds["command"] == "edit") {
             // apply all changes to the document
             var text = doc.value;
             text = merge(text,cmds.diff,applied_changes);
@@ -332,7 +340,7 @@ function init() {
 
     socket.onclose = function(e) {
         console.log("Connection closed.");
-        alert('Connection closed.');
+        alert("Connection closed.");
         socket = null;
     }
 
