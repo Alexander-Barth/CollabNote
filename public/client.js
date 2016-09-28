@@ -1,3 +1,7 @@
+// CollabNote is a minimalistic collaborative markdown text editor
+// License: AGPL v3, https://www.gnu.org/licenses/agpl-3.0.txt
+// Copyright (C) 2016 Alexander Barth, https://github.com/Alexander-Barth
+
 "use strict";
 
 var socket = null;
@@ -33,7 +37,7 @@ function copy(obj) {
 // difference of setA and setB
 // all elements in setA, but not in setB
 function diffset(setA,setB) {
-    return setA.filter(function(_) { return setB.indexOf(_) === -1});
+    return setA.filter(function(_) { return setB.indexOf(_) === -1; });
 }
 
 // apply a single change to oldtext
@@ -43,12 +47,12 @@ function diffset(setA,setB) {
 function apply_single_change(oldtext,change,applied_changes) {
     var newtext = oldtext;
 
-    // check if change can be applied 
+    // check if change can be applied
     if (!isEqual(applied_changes,change.base)) {
         // no
         return null;
     }
-    
+
     if (change.del !== undefined) {
         newtext = newtext.substring(0,change.del.start) + newtext.substring(change.del.start+change.del.n);
     }
@@ -65,20 +69,18 @@ function apply_single_change(oldtext,change,applied_changes) {
 }
 
 // rebase change2 so that it can be applied after change1
-// TODO: 
-
 
 function rebase(change1,change2) {
     var n;
-    
+
    if (change1.del) {
        // amount of text that has been deleted
        n = change1.del.n;
 
-       if (change2.add && change1.del.start <= change2.add.start) {       
+       if (change2.add && change1.del.start <= change2.add.start) {
               if (change1.del.start + n < change2.add.start) {
                   // some text has been remove so advance the start index
-                  change2.add.start -= n;    
+                  change2.add.start -= n;
               }
               else {
                   // oh, no, change1 remove a pice of text where change2 added text
@@ -88,7 +90,7 @@ function rebase(change1,change2) {
               }
        }
 
-       if (change2.del && change1.del.start <= change2.del.start) {       
+       if (change2.del && change1.del.start <= change2.del.start) {
               // some text has been remove so advance the start index
               change2.del.start -= n;
        }
@@ -98,12 +100,12 @@ function rebase(change1,change2) {
        // amount of text that has been add
        n = change1.add.data.length;
 
-       if (change2.add && change1.add.start <= change2.add.start) {       
+       if (change2.add && change1.add.start <= change2.add.start) {
               // some text has been added ahead so increase the start index
               change2.add.start += n;
        }
 
-       if (change2.del && change1.add.start <= change2.del.start) {       
+       if (change2.del && change1.add.start <= change2.del.start) {
               // some text has been added ahead so inclear the start index
               change2.del.start += n;
        }
@@ -134,7 +136,7 @@ function merge(oldtext,allchanges,applied_changes) {
                 }
             }
         }
-        
+
         if (k !== null) {
             newtext = apply_single_change(oldtext,changes[k],applied_changes);
             oldtext = newtext;
@@ -142,14 +144,14 @@ function merge(oldtext,allchanges,applied_changes) {
             // rebase all other patches with the same base
             for (j = 0; j < changes.length; j++) {
                 if (isEqual(changes[k].base,changes[j].base) && k !== j) {
-                    // rebase changes[j]                    
+                    // rebase changes[j]
                     rebase(changes[k],changes[j]);
-                }                
-                
-            }        
+                }
+
+            }
 
             // remove current change from the list
-            changes.splice(k,1);             
+            changes.splice(k,1);
         }
         else {
             console.log('cannot apply all changes');
@@ -188,7 +190,7 @@ function compare(oldtext,text) {
     for (var i=0; i < Math.max(oldtext.length,text.length); i++) {
         if (oldtext[i] !== text[i]) {
             for (var j=0; j < Math.max(oldtext.length,text.length); j++) {
-                
+
                 // we always need i <= (old)text.length-j
 
                 if (oldtext[oldtext.length-1-j] !== text[text.length-1-j] || i == oldtext.length-j || i == text.length-j) {
@@ -199,16 +201,16 @@ function compare(oldtext,text) {
                         //console.log('delete',i,oldtext.substring(i,oldtext.length-j));
                     }
                     // added
-                    
+
                     if (i !== text.length-j) {
                         cmd.add = {start: i, data: text.substring(i,text.length-j)};
                         //console.log('added',i,text.substring(i,text.length-j));
                     }
-                    
+
                     return cmd;
 
-                }                            
-            }                         
+                }
+            }
         }
     }
 }
@@ -218,7 +220,7 @@ function update(ev) {
     var cmd;
     //console.log(doc.value,ev);
     render();
-    
+
     cmd = compare(oldtext,doc.value);
 
     if (cmd !== null) {
@@ -229,7 +231,7 @@ function update(ev) {
         cmd.id = userid + ':' + tag;
         cmd.base = copy(applied_changes);
         tag = tag+1;
-        
+
         // update change list
         applied_changes.push(cmd.id);
         applied_changes.sort();
@@ -237,9 +239,9 @@ function update(ev) {
         // keep track of local changed
         local_changes[cmd.id] = cmd;
 
-        // send to server        
+        // send to server
         socket.send(JSON.stringify({'command': 'edit', 'diff': [cmd]}));
-    }    
+    }
 }
 
 
@@ -266,7 +268,7 @@ function encode_query_string(param) {
     var parameters = "";
 
     for (var name in param) {
-        parameters += (parameters.length !==0 ? "&" : "") + encodeURIComponent(name) + "=" + encodeURIComponent(param[name]);        
+        parameters += (parameters.length !==0 ? "&" : "") + encodeURIComponent(name) + "=" + encodeURIComponent(param[name]);
     }
 
     return parameters;
@@ -284,18 +286,18 @@ function init() {
     }
 
     if (qs['docid'] === undefined) {
-        // random id, must be unique for a document        
+        // random id, must be unique for a document
         qs['docid'] = Math.round(Math.random() * 1e8);
         var newURL = window.location.protocol + "//" + window.location.host + window.location.pathname + '?' + encode_query_string(qs);
         window.location.href = newURL;
     }
-    
+
     docid = qs['docid'];
 
     // start with empty document
     doc = document.getElementById("doc");
     doc.value = "";
-    oldtext = doc.value;    
+    oldtext = doc.value;
     doc.onchange = update;
     doc.onkeyup = update;
 
@@ -336,7 +338,4 @@ function init() {
 
     test();
 };
-
-
-
 

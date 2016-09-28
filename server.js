@@ -1,3 +1,7 @@
+// CollabNote is a minimalistic collaborative markdown text editor
+// License: AGPL v3, https://www.gnu.org/licenses/agpl-3.0.txt
+// Copyright (C) 2016 Alexander Barth, https://github.com/Alexander-Barth
+
 var WebSocketServer = require('ws').Server;
 var http = require('http');
 
