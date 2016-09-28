@@ -1,6 +1,6 @@
-# ColabNote
+# CollabNote
 
-ColablNote is a minimalistic collaborative markdown text editor. It also supports LaTeX equation enclosed with $ (inline equation) or with $$ (block equation).
+CollabNote is a minimalistic collaborative markdown text editor. It also supports LaTeX equation enclosed with $ (inline equation) or with $$ (block equation).
 
 ## Install Mongodb
 
@@ -16,7 +16,7 @@ You might also enable `smallfiles` by adding the following to `/etc/mongodb.conf
 smallfiles = true
 ```
 
-## Install ColabNote
+## Install CollabNote
 
 Issue the following commands:
 
@@ -26,7 +26,7 @@ cd CollabNote
 npm install
 ```
 
-Run ColabNote with the following command:
+Run CollabNote with the following command:
 
 ```
 nodejs server.js
@@ -35,3 +35,10 @@ nodejs server.js
 Open the address http://localhost:8000/ with your web-browser.
 
 A document can be shared by sending its URL.
+
+
+## Install on OpenShift
+
+```
+rhc create-app CollabNote nodejs-0.10 mongodb-2.4 --from-code=https://github.com/Alexander-Barth/CollabNote.git
+```
