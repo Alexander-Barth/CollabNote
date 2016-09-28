@@ -11,7 +11,7 @@ var serveStatic = require('serve-static');
 var MongoClient = require('mongodb').MongoClient;
 var assert = require('assert');
 var ObjectId = require('mongodb').ObjectID;
-var url = 'mongodb://localhost:27017/test';
+var url = 'mongodb://localhost:27017/collabnote';
 
 // if OPENSHIFT env variables are present, use the available connection info:
 if (process.env.OPENSHIFT_MONGODB_DB_PASSWORD) {
@@ -123,5 +123,5 @@ wss.on('connection', function(ws) {
 
 // Listen
 server.listen(port, ipaddr, function() {
-    console.log((new Date()) + ': Listening at IP ' + ipaddr +' on port ' + port);
+    console.log((new Date()) + ': Listening at http://' + ipaddr + ':' + port);
 });
