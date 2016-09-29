@@ -245,30 +245,21 @@ function update(ev) {
 }
 
 
+// http://stackoverflow.com/a/13419367
+function parse_query_string(qstr) {
+    qstr = qstr || window.location.search;
 
-function parse_query_string() {
-    // http://stackoverflow.com/a/3855394
-    return (function(a) {
-        var i, p;
-        var b = {};
+    if (qstr === "") {
+        return {};
+    }
 
-        if (a === "") {
-            return {};
-        }
-
-        for (i = 0; i < a.length; i+=1)
-        {
-            p = a[i].split("=", 2);
-            if (p.length === 1) {
-                b[p[0]] = "";
-            }
-            else {
-                b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
-            }
-        }
-        return b;
-    })(window.location.search.substr(1).split("&"));
-
+    var query = {};    
+    var a = qstr.substr(1).split("&");
+    for (var i = 0; i < a.length; i++) {
+        var b = a[i].split("=");
+        query[decodeURIComponent(b[0])] = decodeURIComponent(b[1] || "");
+    }
+    return query;
 }
 
 function encode_query_string(param) {
@@ -276,7 +267,9 @@ function encode_query_string(param) {
     var parameters = "";
 
     for (name in param) {
-        parameters += (parameters.length !==0 ? "&" : "") + encodeURIComponent(name) + "=" + encodeURIComponent(param[name]);
+        if (param.hasOwnProperty(name)) {
+            parameters += (parameters.length !==0 ? "&" : "") + encodeURIComponent(name) + "=" + encodeURIComponent(param[name]);
+        }
     }
 
     return parameters;

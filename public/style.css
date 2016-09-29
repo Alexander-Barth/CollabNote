@@ -12,6 +12,6 @@ body {
     overflow-y: scroll;
 }
 
-.note {
+.note, #footer{
   clear: both;
 }
