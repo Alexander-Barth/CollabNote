@@ -7,7 +7,7 @@ Copyright (C) 2016 Alexander Barth, https://github.com/Alexander-Barth
 -->
    <head>
       <meta charset="utf-8">
-      <meta name="referrer" content="noreferrer" >
+      <meta name="referrer" content="never" >
       <script type="text/javascript" src="client.js"></script>
       <script type="text/javascript" src="test_merge.js"></script>
       <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.6/marked.js"></script>
@@ -32,6 +32,11 @@ Copyright (C) 2016 Alexander Barth, https://github.com/Alexander-Barth
        <textarea id="doc"></textarea>
        <div class="markdown-body" id="rendered"></div>
      </div>
+
+     <form id="file-form" action="upload" method="POST" enctype="multipart/form-data">
+       <input type="file" id="file-select" name="media" />
+       <button type="submit" id="upload-button">Include image</button>
+     </form>
 
      <div id="footer">
        Bookmark this page to come back to your document.
