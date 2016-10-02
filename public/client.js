@@ -355,14 +355,20 @@ function init() {
         // Create a new FormData object.
         var formData = new FormData();
 
+
+
         // Loop through each of the selected files.
         for (var i = 0; i < files.length; i++) {
             var file = files[i];
 
             // Check the file type.
             if (!file.type.match('image.*')) {
-                continue;
+                alert('Only images are supported (PNG, JPG, GIF and SVG)');
+                uploadButton.innerHTML = 'Upload';
+                return;
             }
+
+
 
             // Add the file to the request.
             formData.append('media', file, file.name);
@@ -379,17 +385,25 @@ function init() {
             if (xhr.status === 200) {
                 // File(s) uploaded.
                 uploadButton.innerHTML = 'Upload';
-            } else {
-                alert('An error occurred!');
             }
         };
         //Call a function when the state changes.
 
         xhr.onreadystatechange = function() {
-            if(xhr.readyState == 4 && xhr.status == 200) {
-                console.log(xhr.responseText);
-                var data = JSON.parse(xhr.responseText);
-                set_document(doc.value + '![alt text](media/' + data.mediaid + ' "title")');
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    console.log(xhr.responseText);
+                    var data = JSON.parse(xhr.responseText);
+                    //set_document(doc.value + '![alt text](media/' + data.mediaid + ' "title")');
+                    set_document(doc.value.substring(0,doc.selectionStart)
+                                 + '![alt text](media/' + data.mediaid + ' "title")'
+                                 + doc.value.substring(doc.selectionStart));
+                    update();
+                }
+                else {
+                    console.log(xhr.responseText);
+                    alert(xhr.responseText);
+                }
             }
         }
 

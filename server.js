@@ -71,6 +71,8 @@ app.get('/media/:id', function(req, res) {
                 console.log(typeof doc.media);
                 console.log('check ',doc.media instanceof Buffer,Object.prototype.toString.call(doc.media));
                 console.log('doc.media',doc.media);
+
+                res.setHeader('Content-Type', doc.mimetype);
                 res.send(doc.media.buffer);
                 res.end();
                 db.close();
@@ -86,6 +88,25 @@ app.post('/upload', upload.single('media'), function(req, res) {
     // check if file is an image or video, otherwise reject
     console.log('req',req);
     console.log('req.file',req.file);
+
+    if (!req.file) {
+        res.status(400).send({
+            message: 'no file uploaded'
+        });
+        return;
+    }
+
+    var accepted_mimetypes = ['image/png','image/jpeg','image/gif','image/svg+xml'];
+    var mimetype = req.file.mimetype;
+    if (accepted_mimetypes.indexOf(mimetype) === -1) {
+        // reject
+        res.status(415).send({
+            message: 'Mimetype "' + req.file.mimetype + '" is not acceptable. I accepted only: ' + accepted_mimetypes.join(', ')
+        });
+        return;
+    }
+
+
     // make sure mediaid is unique
     var mediaid = makeid(5) + '-' + req.file.originalname;
 
@@ -102,6 +123,7 @@ app.post('/upload', upload.single('media'), function(req, res) {
 
         db.collection('media').insertOne(
             {'mediaid': mediaid,
+             'mimetype': mimetype,
              'media': media},
             function(err,result) {
                 assert.equal(err, null);
