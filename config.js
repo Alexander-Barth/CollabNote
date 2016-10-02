@@ -9,7 +9,7 @@ config.port = process.env.OPENSHIFT_NODEJS_PORT || 8000
 // maximum file size during upload, the special value of -1 indicates that
 // file can be arbitrarily large
 
-config.upload.maxsize = 1000;
+config.upload.maxsize = 100000;
 config.upload.accepted_mimetypes = ['image/png','image/jpeg','image/gif','image/svg+xml'];
 
 
