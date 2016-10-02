@@ -11,16 +11,16 @@ var upload = multer();
 // get mime type by file extension
 var mime = require('mime');
 
-
-var app = express();
-var expressWs = require('express-ws')(app);
-
 // mongodb
 var mongodb = require('mongodb');
 var MongoClient = mongodb.MongoClient;
 var Grid = mongodb.Grid;
 var assert = require('assert');
 var ObjectId = require('mongodb').ObjectID;
+
+var app = express();
+var expressWs = require('express-ws')(app);
+
 
 function makeid(len)
 {
@@ -58,7 +58,7 @@ app.get('/media/:id', function(req, res) {
 });
 
 
-
+// handle upload of images or videos
 app.post('/upload', upload.single('media'), function(req, res) {
     //console.log('req',req);
     //console.log('req.file',req.file);
@@ -70,22 +70,32 @@ app.post('/upload', upload.single('media'), function(req, res) {
         return;
     }
 
+    // check file size
+    if (config.upload.maxsize !== -1 && req.file.size > config.upload.maxsize) {
+        res.status(406).send({
+            message: 'Size of "' + req.file.size + '" is too large. I accepted only: ' + config.upload.maxsize
+        });
+        return;
+    }
+
     // check if file is an image or video, otherwise reject
     // by checking the mimetype and the file extension
     var mimetype = req.file.mimetype;
     var mimetype_ext = mime.lookup(req.file.originalname);
 
-    if (config.accepted_mimetypes.indexOf(mimetype) === -1 ||
-        config.accepted_mimetypes.indexOf(mimetype_ext) === -1) {
+    if (config.upload.accepted_mimetypes.indexOf(mimetype) === -1 ||
+        config.upload.accepted_mimetypes.indexOf(mimetype_ext) === -1) {
         // reject
         res.status(415).send({
-            message: 'Mimetype "' + req.file.mimetype + '" is not acceptable. I accepted only: ' + accepted_mimetypes.join(', ')
+            message: 'Mimetype "' + req.file.mimetype + '" is not acceptable. I accepted only: ' + config.upload.accepted_mimetypes.join(', ')
         });
         return;
     }
 
     // TODO: make sure mediaid is unique
     var mediaid = makeid(5) + '-' + req.file.originalname;
+
+    // TODO: check size
 
     var buffer = req.file.buffer;
     var media = new mongodb.Binary(buffer);
