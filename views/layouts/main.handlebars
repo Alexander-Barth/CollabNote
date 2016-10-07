@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<!--
+CollabNote is a minimalistic collaborative markdown text editor
+License: AGPL v3, https://www.gnu.org/licenses/agpl-3.0.txt
+Copyright (C) 2016 Alexander Barth, https://github.com/Alexander-Barth
+-->
+   <head>
+      <meta charset="utf-8">
+      <meta name="referrer" content="never" >
+      <script type="text/javascript">
+         var config = {{{config}}};
+      </script>         
+      <script type="text/javascript" src="client.js"></script>
+      <script type="text/javascript" src="test_merge.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.6/marked.js"></script>
+      <script type="text/javascript" async
+        src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+      </script>
+      <script type="text/javascript">
+         window.onload = init;
+      </script>
+      <link rel="stylesheet" type="text/css" href="style.css">
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.4.1/github-markdown.css">
+      <title>CollabNote (a collaborative markdown text editor)</title>
+   </head>
+   <body>     
+    {{{body}}}
+
+   </body>
+</html>
