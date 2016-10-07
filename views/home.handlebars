@@ -1,6 +1,10 @@
 <div class="note">
 <a href="." target="_blank">New document</a>
-<a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" target="_blank">Markdown syntax</a>
+<form id="file-form" action="upload" method="POST" enctype="multipart/form-data">
+<input type="file" id="file-select" name="media" />
+<button type="submit" id="upload-button">Include image</button>
+</form>
+<a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" target="_blank">Help on Markdown syntax</a>
 </div>
 
 <div id="wrapper">
@@ -8,10 +12,6 @@
 <div class="markdown-body" id="rendered"></div>
 </div>
 
-<form id="file-form" action="upload" method="POST" enctype="multipart/form-data">
-<input type="file" id="file-select" name="media" />
-<button type="submit" id="upload-button">Include image</button>
-</form>
 
 <div id="footer">
 Bookmark this page to come back to your document.
