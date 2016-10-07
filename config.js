@@ -3,8 +3,16 @@ var config = {};
 config.upload = {};
 config.db = {};
 
+
+
 config.ipaddr = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
 config.port = process.env.OPENSHIFT_NODEJS_PORT || 8000
+
+// base URLs can be defined if the node server is behind a reverse proxy/tunnel 
+// to use the public
+
+config.public_url = 'http://' + config.ipaddr + ':' + config.port;
+config.public_ws_url = 'ws://' + config.ipaddr + ':' + config.port;
 
 // maximum file size during upload, the special value of -1 indicates that
 // file can be arbitrarily large
@@ -22,9 +30,9 @@ if (process.env.OPENSHIFT_MONGODB_DB_PASSWORD) {
         process.env.OPENSHIFT_MONGODB_DB_HOST + ':' +
         process.env.OPENSHIFT_MONGODB_DB_PORT + '/' +
         process.env.OPENSHIFT_APP_NAME;
+
+    config.public_ws_url = 'ws://' + config.ipaddr + ':8000';
 }
-
-
 
 module.exports = config;
 

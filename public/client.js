@@ -25,6 +25,7 @@ var applied_changes = [];
 // local changes, not necessarily applied everywhere
 var local_changes = {};
 
+var url, ws_url;
 
 function isEqual(arr1, arr2) {
     return JSON.stringify(arr1) === JSON.stringify(arr2);
@@ -307,8 +308,25 @@ function init() {
         tex2jax: {inlineMath: [["$","$"], ["\\(","\\)"]]}
     });
 
+
+    if (config.public_url) {
+        url = config.public_url;
+    }
+    else {
+        url = "ws://" + window.location.hostname;
+    }
+
+    if (config.public_ws_url) {
+        ws_url = config.public_ws_url;
+    }
+    else {
+        ws_url = "ws://" + window.location.hostname;
+    }
+    // fix
+    ws_url = "ws://" + window.location.hostname + ":8000";
+
     // open socked
-    socket = new WebSocket("ws://" + window.location.hostname + ":8000");
+    socket = new WebSocket(ws_url);
 
     socket.onopen = function() {
         console.log("Connected!");

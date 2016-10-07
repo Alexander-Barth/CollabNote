@@ -4,6 +4,8 @@
 
 var config  = require('./config')
 var express = require('express');
+var exphbs  = require('express-handlebars');
+
 // for file upload
 var multer  = require('multer')
 var upload = multer();
@@ -19,6 +21,8 @@ var assert = require('assert');
 var ObjectId = require('mongodb').ObjectID;
 
 var app = express();
+app.engine('handlebars', exphbs({defaultLayout: 'main'}));
+app.set('view engine', 'handlebars');
 var expressWs = require('express-ws')(app);
 
 
@@ -32,6 +36,18 @@ function makeid(len)
 
     return text;
 }
+
+
+app.get('/', function (req, res) {
+    res.render('home',{'config': JSON.stringify({
+        'port': config.port,
+        'public_url': config.public_url,
+        'public_ws_url': config.public_ws_url,
+        'upload': {
+            'maxsize': config.upload.maxsize,
+            'accepted_mimetypes': config.upload.accepted_mimetypes
+        }})});
+});
 
 app.use(express.static('public'));
 
