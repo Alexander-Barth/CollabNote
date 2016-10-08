@@ -57,9 +57,9 @@ app.param('id', function (req, res, next, id) {
 
 app.get('/media/:id', function(req, res) {
     //console.log('get route', req.params.id);
-    
+
     var mediaid = req.params.id;
-    
+
     MongoClient.connect(config.db.url, function(err, db) {
         assert.equal(null, err);
         db.collection('media').findOne(
@@ -69,7 +69,7 @@ app.get('/media/:id', function(req, res) {
                 res.send(doc.media.buffer);
                 res.end();
                 db.close();
-            });            
+            });
     });
 });
 
@@ -94,6 +94,12 @@ app.post('/upload', upload.single('media'), function(req, res) {
         return;
     }
 
+    // get IP address of client
+    var ip = req.headers['x-forwarded-for'] ||
+        req.connection.remoteAddress ||
+        req.socket.remoteAddress ||
+        req.connection.socket.remoteAddress;
+
     // check if file is an image or video, otherwise reject
     // by checking the mimetype and the file extension
     var mimetype = req.file.mimetype;
@@ -111,8 +117,6 @@ app.post('/upload', upload.single('media'), function(req, res) {
     // TODO: make sure mediaid is unique
     var mediaid = makeid(5) + '-' + req.file.originalname;
 
-    // TODO: check size
-
     var buffer = req.file.buffer;
     var media = new mongodb.Binary(buffer);
 
@@ -122,17 +126,18 @@ app.post('/upload', upload.single('media'), function(req, res) {
         db.collection('media').insertOne(
             {'mediaid': mediaid,
              'mimetype': mimetype,
+             'ip': ip,
              'media': media},
             function(err,result) {
                 assert.equal(err, null);
-                console.log("Inserted data into",mediaid);
+                console.log("Store media from ", ip, " as ", mediaid);
                 db.close();
             });
     });
 
 
     res.send(JSON.stringify({'mediaid': mediaid}));
-}); 
+});
 
 // list of all connections
 connections = [];
@@ -167,14 +172,14 @@ app.ws('/', function(ws, req) {
                     if (doc != null) {
                         Array.prototype.push.apply(revhistory.diff,doc.diff);
                         //console.log('got from db',doc);
-                    } 
-                    else {                        
+                    }
+                    else {
                         //console.log('revhistory',JSON.stringify(revhistory));
                         ws.send(JSON.stringify(revhistory));
                         db.close();
                     }
                 });
-            });            
+            });
         }
         else if (data.command === 'edit') {
 
@@ -219,5 +224,5 @@ app.ws('/', function(ws, req) {
       console.log(e);
     });
 });
- 
+
 app.listen(config.port,config.ipaddr);
