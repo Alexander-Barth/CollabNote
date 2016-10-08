@@ -357,23 +357,14 @@ function init() {
 
 
     // media upload
-    var form = document.getElementById('file-form');
     var fileSelect = document.getElementById('file-select');
     var uploadButton = document.getElementById('upload-button');
 
-    form.onsubmit = function(event) {
-        event.preventDefault();
-
-        // Update button text.
-        uploadButton.innerHTML = 'Uploading...';
-        
-        // The rest of the code will go here...
+    $("#file-select").change(function(){
         // Get the selected files from the input.
         var files = fileSelect.files;
         // Create a new FormData object.
         var formData = new FormData();
-
-
 
         // Loop through each of the selected files.
         for (var i = 0; i < files.length; i++) {
@@ -382,16 +373,13 @@ function init() {
             // Check the file type.
             if (!file.type.match('image.*')) {
                 alert('Only images are supported (PNG, JPG, GIF and SVG)');
-                uploadButton.innerHTML = 'Upload';
+                //uploadButton.innerHTML = 'Upload';
                 return;
             }
-
-
 
             // Add the file to the request.
             formData.append('media', file, file.name);
         }
-
 
         // Set up the request.
         var xhr = new XMLHttpRequest();
@@ -402,10 +390,9 @@ function init() {
         xhr.onload = function () {
             if (xhr.status === 200) {
                 // File(s) uploaded.
-                uploadButton.innerHTML = 'Upload';
+                //uploadButton.innerHTML = 'Upload';
             }
         };
-        //Call a function when the state changes.
 
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4) {
@@ -428,8 +415,7 @@ function init() {
         // Send the Data.
         xhr.send(formData);
 
-    }
-
+    });
     test();
 };
 

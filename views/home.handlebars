@@ -1,19 +1,59 @@
-<div class="note">
-<a href="." target="_blank">New document</a>
-<form id="file-form" action="upload" method="POST" enctype="multipart/form-data">
-<input type="file" id="file-select" name="media" />
-<button type="submit" id="upload-button">Include image</button>
-</form>
-<a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" target="_blank">Help on Markdown syntax</a>
-</div>
 
-<div id="wrapper">
-<textarea id="doc"></textarea>
-<div class="markdown-body" id="rendered"></div>
-</div>
+<!-- Fixed navbar -->
+    <nav class="navbar navbar-default navbar-static-top  navbar-inverse">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="https://github.com/Alexander-Barth/CollabNote">CollabNote</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="." target="_blank">New document</a></li>
+            <li><a href="#" data-toggle="modal" data-target="#myModal">Include Image</a></li>
+            <!--<li><a href="#save">Download</a></li>-->
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" target="_blank">Help on Markdown syntax</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
 
+    <div class="container">
+      <div class="row">
+        <textarea class="col-md-6" id="doc" >
+        </textarea>
+        <div class="markdown-body col-md-6" id="rendered">
+        </div>
+      </div>
 
-<div id="footer">
-Bookmark this page to come back to your document.
-</div>
+      <div class="row">
+        Bookmark this page to come back to your document.
+      </div>
 
+      <!-- Image upload modal dialog -->
+      <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Upload image</h4>
+            </div>
+            <div class="modal-body">
+              <p><input type="file" id="file-select" class="btn btn-default" name="media" /></p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>

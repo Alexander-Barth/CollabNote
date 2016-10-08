@@ -1,32 +1,7 @@
-html, body { 
-  margin:0; 
-  padding:0; 
-  height:100%; 
-}
-
-body {
-    font-family: sans;
-}
-
-#wrapper {
-    height: 90%;
-}
-
 #doc, #rendered {
-/*    height: 500px; */
-    height: 100%;
-    width: 45%;
-    float: left;
-    margin: 5px;
-    border: 1px solid gray;
-    padding: 10px;
-    overflow-y: scroll;
+    height: 700px;
 }
 
-.note, #footer {
-  clear: both;
-}
-
-#file-form {
-    display: inline;
+#rendered {
+  border: 1px solid grey;
 }
