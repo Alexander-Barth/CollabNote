@@ -127,6 +127,7 @@ app.post('/upload', upload.single('media'), function(req, res) {
             {'mediaid': mediaid,
              'mimetype': mimetype,
              'ip': ip,
+             'time': (new Date).getTime(),
              'media': media},
             function(err,result) {
                 assert.equal(err, null);
