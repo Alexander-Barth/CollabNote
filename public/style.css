@@ -1,6 +1,9 @@
 #doc, #rendered {
     height: 700px;
 }
+#doc {
+  font-family: monospace;
+}
 
 #rendered {
   border: 1px solid grey;

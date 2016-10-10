@@ -175,7 +175,27 @@ app.ws('/', function(ws, req) {
                     }
                     else {
                         //console.log('revhistory',JSON.stringify(revhistory));
-                        ws.send(JSON.stringify(revhistory));
+                        if (revhistory.diff.length === 0) {
+
+                            // new document: send initialtext
+                            revhistory.diff.push({
+                                "time": 0,
+                                "add": {"start":0,"data":config.initialtext},
+                                "id":"bot:0","base":[]});
+
+                            db.collection('documents').insertOne(
+                                {'docid': ws.docid,
+                                 'diff': revhistory.diff},
+                                function(err,result) {
+                                    assert.equal(err, null);
+                                    ws.send(JSON.stringify(revhistory));
+                                });
+                        }
+                        else {
+                            //console.log('revhistory',JSON.stringify(revhistory));
+                            ws.send(JSON.stringify(revhistory));
+                        }
+
                         db.close();
                     }
                 });
